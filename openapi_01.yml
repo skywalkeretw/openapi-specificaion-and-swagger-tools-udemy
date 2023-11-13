@@ -2,7 +2,8 @@ openapi: 3.0.3
 info:
   title: EazyShop Products APIs Definition
   description: |
-     Using this OpenAPI specification, any consumer can understand the APIs that are exposed by EazyShop
+    # About Us
+     Using this **OpenAPI** specification, any consumer can understand the APIs that are exposed by EazyShop
   termsOfService: https://eazyshop.com/terms/
   contact:
     name: API Support
@@ -15,9 +16,26 @@ info:
 servers:
   - url: https://development.eazyshop-server.com/v1
     description: Development server
+components:
+  parameters:
+    orderIdQueryParams:
+        name: orderId
+        in: query
+        required: true
+        schema:
+          type: integer
+tags:
+  - name: categories
+    description: categorie related operations
+  - name: products
+    description: product related
+  - name: orders
+    description: orders
 paths:
   /categories:
     get:
+      tags:
+        - categories
       summary: List all catgories
       description: Returns the list of categories supported by EazyShop
       parameters:
@@ -27,7 +45,14 @@ paths:
             type: integer
             minimum: 100
             maximum: 1000
-          example: 101
+          examples:
+            mobiles:
+              value: 101
+              summary: use for mobies
+            laptops:
+              value: 200
+            headphones:
+              value: 150
       responses:
         '200':
           description: A list of catgories
@@ -42,8 +67,23 @@ paths:
                       type: integer
                     name:
                       type: string
+              examples:
+                all-categories-data:
+                  summary: get all categorties
+                  value:
+                    - categorieId: 101
+                      name: Mobiles
+                    - categorieId: 200
+                      name: laptops
+                laptops:
+                  summary: get laptops
+                  value:
+                    categorieId: 200
+                    name: laptops
   /categories/{categoryId}:
     get:
+      tags:
+        - categories
       summary: return catgorie details
       description: Returns the list of categories supported by EazyShop
       parameters:
@@ -68,7 +108,9 @@ paths:
                   name:
                     type: string
   /products:
-    get: 
+    get:
+      tags:
+        - products
       summary: List all products
       description: Returns the list of Products supported by EazyShop
       parameters:
@@ -99,8 +141,19 @@ paths:
                       type: string
                     quantity:
                       type: integer
+              examples:
+                products-data:
+                  summary: products example data
+                  value:
+                  - productId: 111
+                    name: Foot
+                    price: 15,6
+                    categoryName: Lol
+                    quantity: 159
   /products/{productId}:
     get: 
+      tags:
+        - products
       summary: return Product data
       description: Returns the list of Products supported by EazyShop
       parameters:
@@ -132,6 +185,8 @@ paths:
                     type: integer
   /orders:
     post:
+      tags:
+      - orders
       summary: Create Order
       description: Post order details to EazyShop for processing
       requestBody:
@@ -177,6 +232,8 @@ paths:
                   orderId:
                     type: integer
     put:
+      tags:
+      - orders
       summary: Update Order
       description: Put order details to EazyShop for processing
       requestBody:
@@ -217,26 +274,22 @@ paths:
         '200':
           description: Oder sucessfully updated
     delete:
+      tags:
+        - orders
       summary: delete Order
       description: delete order details to EazyShop for processing
       parameters:
-        - name: orderId
-          in: query
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/orderIdQueryParams"
       responses:
         '204':
           description: Oder sucessfully deleted
     get:
+        tags:
+          - orders
         summary: get Order
         description: get order details to EazyShop for processing
         parameters:
-          - name: orderId
-            in: query
-            required: true
-            schema:
-              type: integer
+          - $ref: "#/components/parameters/orderIdQueryParams"
         responses:
           '200':
             description: Oder sucessfully deleted
